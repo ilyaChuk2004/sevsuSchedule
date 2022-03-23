@@ -1,0 +1,65 @@
+{
+  "cwd": "C:\\Users\\iliya\\Desktop\\f7su",
+  "type": [
+    "pwa"
+  ],
+  "name": "sevsu",
+  "framework": "core",
+  "template": "single-view",
+  "bundler": "vite",
+  "cssPreProcessor": "less",
+  "theming": {
+    "customColor": true,
+    "color": "#6bafca",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": true,
+  "customBuildConfig": {
+    "rtl": false,
+    "darkTheme": true,
+    "lightTheme": true,
+    "themes": [
+      "ios"
+    ],
+    "components": [
+      "appbar",
+      "dialog",
+      "popup",
+      "popover",
+      "actions",
+      "sheet",
+      "toast",
+      "preloader",
+      "progressbar",
+      "sortable",
+      "swipeout",
+      "contacts-list",
+      "virtual-list",
+      "card",
+      "form",
+      "input",
+      "checkbox",
+      "radio",
+      "toggle",
+      "range",
+      "grid",
+      "calendar",
+      "infinite-scroll",
+      "pull-to-refresh",
+      "data-table",
+      "fab",
+      "messages",
+      "messagebar",
+      "notification",
+      "tooltip",
+      "skeleton",
+      "elevation",
+      "typography",
+      "accordion",
+      "searchbar",
+      "login-screen"
+    ]
+  }
+}
