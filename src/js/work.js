@@ -155,9 +155,6 @@ export function work(fur) {
 
 
             swiper = new app.swiper.create('.swiper', {
-                // Optional parameters
-
-                // If we need pagination
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,
@@ -167,9 +164,6 @@ export function work(fur) {
                 },
                 allowTouchMove: false,
                 addSlidesAfter: 10,
-
-                // Navigation arrows
-
                 autoHeight: true,
                 initialSlide: curWeekI,
 
@@ -179,15 +173,14 @@ export function work(fur) {
                         let h = qs(document, '.swiper-pagination').offsetHeight
                         qs(document, '.fab').style.bottom = `${h + 10}px`
                         qs(document, '.swiper-wrapper').style.marginBottom = `${h + 20}px`
-                        let ch = 0
+                        let condition = 0
                         try {
                             document.querySelector(`.comp.cur`).closest('.day').classList.add("cur")
                             document.querySelector(`.day.cur`).closest('.swiper-slide').classList.add("cur")
-                            ch = nee2[curWeekI][new Date().getDay() - 1].length > 0
-                        } catch (error) {
-
-                        }
-                        if (new Date().getDay() != 0 && ch) {
+                            condition = nee2[curWeekI][new Date().getDay() - 1].length > 0
+                        } catch (error) { }
+                        
+                        if (new Date().getDay() != 0 && condition && ) { // если не воскресенье 
                             setTime()
                             window.timeStarted = 1
 

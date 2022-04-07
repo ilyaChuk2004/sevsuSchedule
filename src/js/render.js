@@ -434,14 +434,16 @@ export function dataMake(weekA, jj) {
 }
 
 export function setTime() {
-    // debugger
+    debugger
+    let maxPar = _.last(nee2[curWeekI][new Date().getDay() - 1]).par; // номер последней пары
     setInterval(() => {
         let cSec = () => { return new Date().getSeconds() }
         let cMin = () => { return new Date().getMinutes() }
         let cHou = () => { return new Date().getHours() }
         let cTime = () => { return (cHou() * 60) + cMin() }
         let cTimes = () => { return cTime() * 60 + cSec() }
-        var cPar
+        
+        window.cPar = 0;
 
         time.some((el, i) => {
             let s = (+el.s.split(':')[0] * 60) + (+el.s.split(':')[1])
@@ -452,14 +454,16 @@ export function setTime() {
             } catch (error) {
 
             }
-            if (cTime() >= s && cTime() < e) {
+            if (cTime() >= s && cTime() < e && i<maxPar) {
                 // console.log(i)
                 cPar = [el, i,
                     (+el.e.split(':')[0] * 60) + (+el.e.split(':')[1])];
                 return 1;
             } else {
-                if (cTime() >= e && cTime() < sn) {
+                debugger
+                if (cTime() >= e && cTime() < sn && i+1 < maxPar) {
                     // console.log('bef', time[i + 1])
+                    
                     cPar = [time[i + 1], i + 1,
                     (+time[i + 1].s.split(':')[0] * 60) + (+time[i + 1].s.split(':')[1]),
                         'n'];
@@ -504,15 +508,16 @@ export function setTime() {
             )
             document.querySelector('.now').classList.add('none')
             document.querySelector('.now .tit').innerHTML = "сейчас перерыв <img src='break.png'/>"
-            document.querySelector('.now #hours').textContent = cPar[0].e
+            document.querySelector('.now #hours').textContent = cPar[0].s
             qs(document, '.now').style.flexDirection = ""
             try {
                 document.querySelector('.comp.this').classList.remove('this')
             } catch (error) {
 
-            }
+            }	
         } else {
             document.querySelector('.now .tit').innerHTML = "Занятия закончились.. <img style='height: 15pt;' src='zzz.png'/>"
+            document.querySelector('.now').classList.remove('none')
             try {
                 document.querySelector('.comp.this').classList.remove('this')
             } catch (error) {
