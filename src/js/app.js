@@ -75,6 +75,8 @@ if (localStorage.last && navigator.onLine && new Date(+localStorage.last).getDat
   }, 2000);
 }
 
+import lodash from 'lodash'
+window._=lodash
 
 
 

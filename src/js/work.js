@@ -180,7 +180,7 @@ export function work(fur) {
                             condition = nee2[curWeekI][new Date().getDay() - 1].length > 0
                         } catch (error) { }
                         
-                        if (new Date().getDay() != 0 && condition && ) { // если не воскресенье 
+                        if (new Date().getDay() != 0 && condition) { // если не воскресенье 
                             setTime()
                             window.timeStarted = 1
 
