@@ -3,6 +3,9 @@ import { createStore } from 'framework7';
 
 const store = createStore({
   state: {
+    appData: {
+      url:"sevsu.ichuk.ru"
+    },
     gf: {
       vibrate(ms) {
         /**

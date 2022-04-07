@@ -15,6 +15,9 @@ export var swiper
 export var curWeekI;
 export var wEl;
 export var weeksDom = []
+export var nee2 = [{ par: 100 }]
+export var nee = []
+export var nee12 = []
 export var weeksArr2 = []
 export var emptyDays = []
 export var week = new DOMParser().parseFromString(`<div class="week"><h3 class="weekTit">для нечётной недели</h3>

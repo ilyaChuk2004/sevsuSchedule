@@ -1,5 +1,6 @@
 
 import Framework7, { request, utils, getDevice, createStore } from 'framework7';
+import Dialog from 'framework7/components/dialog';
 import Toast from 'framework7/components/toast';
 import Preloader from 'framework7/components/preloader';
 import Progressbar from 'framework7/components/progressbar';
@@ -33,6 +34,7 @@ import LoginScreen from 'framework7/components/login-screen';
 import Swiper from 'framework7/components/swiper';
 
 Framework7.use([
+  Dialog,
   Toast,
   Preloader,
   Progressbar,

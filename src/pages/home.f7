@@ -41,6 +41,8 @@
   import { work } from '../js/work';
   import { today } from '../js/work';
   export default (props, { $store, $f7, $update, $el, $, $onMounted, $onUnmounted }) => {
+    let ptr;
+
 
     function tod(e) {
       today('t')
@@ -89,13 +91,26 @@
 
     console.log('👋')
 
+
+    $f7.on('e-refresh', (notCheck)=>{
+      
+      if (!notCheck && navigator.onLine) {
+        ptr.refresh()
+      }else{
+        let toast = app.toast.create({
+          text: 'нет интернета',
+          closeTimeout: 2000,
+
+        })
+      }
+    })
     $onMounted((mount) => {
 
 
       work()
 
       setTimeout(() => {
-        let ptr = $f7.ptr.get('.ptr-content')
+        ptr = $f7.ptr.get('.ptr-content')
         ptr.on('refresh', (e) => {
           // console.log(e)
           if (navigator.onLine) {

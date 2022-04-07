@@ -29,9 +29,9 @@ export function today(e) {
 
 
 export function work(fur) {
-
-    if (localStorage.weeksArr2 && !fur) {
-        start(JSON.parse(localStorage.weeksArr2))
+    
+    if (localStorage.nee2 && !fur) {
+        start(JSON.parse(localStorage.nee2))
     } else {
         start()
     }
@@ -59,16 +59,16 @@ export function work(fur) {
 
 
         if (!event) {
-            // console.log('req')
+            console.log('req')
             var req = new XMLHttpRequest();
 
 
-            req.open('POST', 'https://sevsu.ichuk.ru/php/get.php', true);
+            req.open('POST', `https://${state.appData.url}/php/get.php`, true);
             req.responseType = 'arraybuffer';
             req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             req.onload = function (e) {
 
-                delete localStorage.weeksArr2
+                delete localStorage.nee2
                 delete localStorage.weeks
                 window.weeksDom = []
 
@@ -97,10 +97,14 @@ export function work(fur) {
             if (!made) {
 
                 weeksArr2 = []
-                workbook = XLSXamr(req.response);
+                workbook = XLSXamr(req.response, { raw: true });
+                window.raw = XLSXamr(req.response, { sheetStubs: true, bookFiles: true, bookDeps: true, cellNF:true });
+                // debugger
                 workbook.SheetNames.forEach(function (sheetName) {
                     window.weeks = workbook.SheetNames
                 })
+
+                
 
 
 
@@ -114,14 +118,15 @@ export function work(fur) {
                     dataMake(weeks[j], j)
                 }
 
-                if (weeksArr2.length > 0) {
-                    localStorage.weeksArr2 = JSON.stringify(weeksArr2)
+                if (nee2.length > 0) {
+                    localStorage.nee2 = JSON.stringify(nee2)
                     localStorage.weeks = JSON.stringify(weeks)
                     localStorage.last = +new Date
                 }
 
                 //////////////////
             } else {
+                
                 window.weeks = JSON.parse(localStorage.weeks)
 
                 let w = weeks.filter(function (word, index) {
@@ -133,10 +138,10 @@ export function work(fur) {
                     }
                 });
 
-                weeksArr2 = JSON.parse(localStorage.weeksArr2)
+                nee2 = JSON.parse(localStorage.nee2)
 
 
-                for (let j = 0; j < weeksArr2.length; j++) {
+                for (let j = 0; j < nee2.length; j++) {
                     makeDom(j)
                 }
             }
@@ -178,7 +183,7 @@ export function work(fur) {
                         try {
                             document.querySelector(`.comp.cur`).closest('.day').classList.add("cur")
                             document.querySelector(`.day.cur`).closest('.swiper-slide').classList.add("cur")
-                            ch = weeksArr2[curWeekI][new Date().getDay() - 1].length > 0
+                            ch = nee2[curWeekI][new Date().getDay() - 1].length > 0
                         } catch (error) {
 
                         }
@@ -192,6 +197,9 @@ export function work(fur) {
 
                         setTimeout(() => {
                             today(e)
+                            setTimeout(() => {
+                                swiper.updateAutoHeight(0)
+                            }, 1000);
                         }, 300);
                         app.emit('e-reloaded')
                         // console.log('iti', e)
@@ -223,6 +231,7 @@ export function work(fur) {
                 app.tooltip.create({
                     targetEl: element,
                     text: ttext,
+                    offset:10,
                     cssClass: (element.getAttribute('delay') !== null ? 'd' + element.getAttribute('delay') : '') + (element.getAttribute('tail') !== null ? ' tail ' + element.getAttribute('tail') : ''),
                     on: {
                         show: function (e) {

@@ -41,6 +41,10 @@ var app = new Framework7({
     path: '/service-worker.js',
   } : {},
 });
+
+export { app, }
+
+
 window.app = app;
 window.state = store.state;
 
@@ -60,6 +64,16 @@ if (app.device.prefersColorScheme() == 'dark') {
 import * as exports from './globalVars';
 Object.entries(exports).forEach(([name, exported]) => window[name] = exported);
 
+import { s_check_version } from './s-check-version'; s_check_version(30000)
+
+if (localStorage.last && navigator.onLine && new Date(+localStorage.last).getDate()!==new Date().getDate()) {
+  setTimeout(() => {
+    q('.page-content').scrollTop(0, 400);
+    setTimeout(() => {
+      app.emit('e-refresh')
+    }, 500);
+  }, 2000);
+}
 
 
 

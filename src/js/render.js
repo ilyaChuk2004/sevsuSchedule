@@ -1,12 +1,14 @@
 
 export function makeDom(j) {
-    const w = weeksArr2[j]
+    // const w = weeksArr2[j]
+    const w = nee2[j]
+
     wEl = week.cloneNode(1)
     // debugger
     qs(wEl, ".weekTit").textContent = `для ${weeks[j].match(/\d/g).join('')} недели`
     for (let i = 0; i < w.length; i++) {//days
         const el = w[i];
-        if (el.length > 0) {
+        if (el.length > 0 && i+1<7) {
             let day = qs(wEl, `.d${i + 1}`)
             let comp = new DOMParser().parseFromString(`<div class="comp">
                                                                                 <div class="para"></div>
@@ -15,14 +17,14 @@ export function makeDom(j) {
                                                                                 <div class="place"></div>
                                                                                 <div class="type"></div>
                                                                             <div>`, "text/html").querySelector('.comp')
-            day.querySelector('h2').innerText = `${el[0].Column19[0]}${el[0].Column19.slice(1).toLocaleLowerCase()}`
+            day.querySelector('h2').innerText = `${el[0].day[0].toUpperCase()}${el[0].day.slice(1)}`
             for (let i2 = 0; i2 < el.length; i2++) {//pars
                 const el2 = el[i2];
                 qw(el2, "")
-                if (el2.Column22 || el2.Column33 || el2.Column34) {
+                if (el2.name) {
                     // debugger
                     try {
-                        if (parseInt(weeks[j]) == curWeek && weeksArr2[i][i2].length > 0 && new Date().getDay() == i + 1) {
+                        if (parseInt(weeks[j]) == curWeek && nee2[i][i2].length > 0 && new Date().getDay() == i + 1) {
                             comp.classList.add('cur')
                             // console.log('added')
                         } else {
@@ -35,15 +37,15 @@ export function makeDom(j) {
                     let re = /( [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\..*)/
                     // console.log(document.querySelector(`.d${i + 1}`))
 
-                    comp.querySelector('.para').innerText = `${el2.Column20[0]}.`
-                    comp.querySelector('.subject').innerText = `${el2.Column33 ? el2.Column33.split(re)[0] : ""} ${el2.Column22 ? el2.Column22.split(re)[0] : ""} ${el2.Column34 ? el2.Column34.split(re)[0] + "(Ⅱ)" : ""}`
-                    comp.querySelector('.name').innerText = `${el2.Column33 ? (el2.Column33.split(re)[1] ? el2.Column33.split(re)[1].trim() : "") : ""} ${el2.Column22 ? (el2.Column22.split(re)[1] ? el2.Column22.split(re)[1].trim() : "") : ""} ${el2.Column34 ? (el2.Column34.split(re)[1] ? el2.Column34.split(re)[1].trim() : "") : ""}`
+                    comp.querySelector('.para').innerText = `${el2.par}.`
+                    comp.querySelector('.subject').innerText = `${el2.name ? el2.name.split(re)[0] : ""} ${qw(el2.spec, '')}`
+                    comp.querySelector('.name').innerText = `${el2.name ? (el2.name.split(re)[1] ? el2.name.split(re)[1].trim() : "") : ""}`
                     try {
-                        comp.querySelector('.place').innerText = `${((el2.Column36 != undefined && (el2.Column36 + '').match(/[0-9]/) != null) ? qw((el2.Column36 + '').replace('\n', ' '), "") : "")}`
+                        comp.querySelector('.place').innerText = `${((el2.place != undefined && (el2.place + '').match(/[0-9]/) != null) ? qw((el2.place + '').replace('\n', ' '), "") : "")}`
                     } catch (error) {
-                        debugger
+                        // debugger
                     }
-                    comp.querySelector('.type').innerText = `${el2.Column22 ? (el2.Column36 != undefined ? el2.Column36 : qw(el2.Column35, "")) : (el2.Column35 != undefined ? el2.Column35 : "")}`
+                    comp.querySelector('.type').innerText = `${el2.type?.search(/ПЗ|ЛР|Л/) > -1 ? el2.type : (el2.place?.search(/ПЗ|ЛР|Л/) > -1? el2.place:'')}`
 
                     day.innerHTML += comp.outerHTML
                     //     .innerHTML += 
@@ -87,7 +89,9 @@ export function dataMake(weekA, jj) {
     var XL_row_object = XLSXamu.sheet_to_row_object_array(workbook.Sheets[weekA]);
     ppo = XL_row_object
     // console.log(json_object)
+    window.ppoR = workbook.Sheets[weekA]
 
+    
 
 
 
@@ -129,7 +133,7 @@ export function dataMake(weekA, jj) {
         }
         // console.log(Object.values(ppo[i]).indexOf("ПИ/б-21-1-о"))
         if (Object.keys(ppo[i]).indexOf("__EMPTY_4") > -1 && ppo[i]["__EMPTY_4"].length > 2 && isNaN(parseInt(ppo[i]["__EMPTY_4"]))) {
-            debugger
+            // debugger
             // emptyDays.push({ title: ppo[i].__EMPTY_4, day: ppo[i].__EMPTY_19 })
         } else { }
 
@@ -290,12 +294,143 @@ export function dataMake(weekA, jj) {
         }
 
     }
-    weeksArr2.push(pfin)
+    // nee2.push(pfin)
 
+
+    
+
+
+    //*NEW ENGINE///////////////////////////////
+
+    let offsetTop = 10; // колво бесполезных ячеек сверху, до "1 пара"
+
+    function parNum(n) {
+        n = n - offsetTop;
+        return n % 8 == 0 ? 8 : n % 8
+    }
+
+    function dayNum(n) {
+        n = n - offsetTop;
+        return Math.ceil(n / 8)
+    }
+    
+    nee2 = []
+    nee12 = []
+    weeks.forEach((el, wI) => { //получаем массив недель
+        let curSheet = raw.Sheets[el]
+
+        let keys = Object.keys(curSheet); // названия клеток: A1, AJ18, X4......
+        let vals = Object.values(curSheet); // их содержимое
+        let entries = Object.entries(curSheet); // всё это в виде массива
+        let inDom = (new DOMParser).parseFromString(XLSXam.utils.sheet_to_html(curSheet), "text/html")
+
+        let glob = ["AB", "Z", "AA", "AC", "AF", "AG", "AJ", "AK"]; //всё, кроме 1 группы
+        function isEmpty(vals, keys, chars, num) {
+            if ((vals[keys.indexOf(chars + num)] == undefined ||
+                vals[keys.indexOf(chars + num)].t == 'z')) {
+                return true
+            } else {
+                return false
+            }
+        }
+        function check(vals, keys, i) {
+            //true если у однопоточников, кроме первой группы, нет пар(=> лекция или англ или выходной)
+            // debugger
+            let ret = true
+            glob.forEach(el => {
+                if (vals[keys.indexOf(el + keys[i].match(/(\d+)/)[0])].v != undefined) {
+                    //если в какой-то колонке чето есть
+                    ret = false
+                }
+
+            })
+            return ret
+        }
+
+       
+        nee=[]
+        for (let i = 0; i < vals.length; i++) { //получаем массив пар
+            if (keys[i].search(/A[JK]\d/) >= 0 // наши 2 колонки 
+                && vals[i].v != undefined && vals[i].v.length > 2 // не пустые
+                ||
+                (keys[i].search(/\bX\d/) >= 0 &&  //1 колонка
+                    vals[i].v != undefined && vals[i].v.length > 2
+                    && check(vals, keys, i)
+                )) {
+                // console.log(vals[i].v,
+                //     // "AL" +
+                //     keys[i].match(/(\d+)/)[0])
+
+                let num = keys[i].match(/(\d+)/)[0];
+                let numBef = keys[i-1].match(/(\d+)/)[0];
+
+                let cPar = parNum(num)
+                    let day;
+                    switch (dayNum(num)) {
+                        case 1:
+                            day = "понедельник"
+                            break;
+                        case 2:
+                            day = "вторник"
+                            break;
+                        case 3:
+                            day = "среда"
+                            break;
+                        case 4:
+                            day = "четверг"
+                            break;
+                        case 5:
+                            day = "пятница"
+                            break;
+                        case 6:
+                            day = "суббота"
+                            break;
+                    }
+
+
+                
+                let spec;
+                if (keys[i].search(/\bX\d/) < 0 && num > offsetTop) {
+                    // debugger
+                    if (isEmpty(vals, keys, "AJ", num)) {
+                        spec = 'Ⅱ'
+                    } else if (inDom.querySelector('#sjs-AJ' + num).getAttribute('colspan') != '2') {
+                        spec = 'Ⅰ'
+                    }
+                }
+                nee.push({
+                    par: cPar,
+                    "day": day,
+                    name: vals[i].v,
+                    type: vals[keys.indexOf("AL" + num)].v,
+                    place: vals[keys.indexOf("AM" + num)].v,
+                    spec: spec,
+                })
+
+            }
+
+        }
+
+        // debugger
+
+        
+        nee12=[]
+        nee.slice(1).forEach((el, i) => {
+            if (el.day) {
+                debugger
+                if (i == 0 || nee.slice(1)[i - 1].day != el.day) {
+                    nee12.push([])
+                }
+                nee12[nee12.length - 1].push(el)
+            }
+        })
+
+
+
+        nee2.push(nee12)
+    });
 
     makeDom(jj)
-
-
 }
 
 export function setTime() {
