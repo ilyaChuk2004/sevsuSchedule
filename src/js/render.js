@@ -11,11 +11,11 @@ export function makeDom(j) {
         if (el.length > 0 && i+1<7) {
             let day = qs(wEl, `.d${i + 1}`)
             let comp = new DOMParser().parseFromString(`<div class="comp">
-                                                                                <div class="para"></div>
-                                                                                <div class="subject"></div>
+                                                                                <div class="para ttip" ttipText="aauu" tail="1"></div>
+                                                                                <div class="subject ttip"></div>
                                                                                 <div class="name"></div>
                                                                                 <div class="place"></div>
-                                                                                <div class="type"></div>
+                                                                                <div class="type ttip" ttipText="aauu" tail="1""></div>
                                                                             <div>`, "text/html").querySelector('.comp')
             day.querySelector('h2').innerText = `${el[0].day[0].toUpperCase()}${el[0].day.slice(1)}`
             for (let i2 = 0; i2 < el.length; i2++) {//pars
@@ -32,32 +32,43 @@ export function makeDom(j) {
                         }
                     } catch (error) {
 
-                    }
+					}
+					
+					//регулярка для разделения строки на название предмета и фио преподавателя
+					let regexp = /( [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\..*)/ 
+					
+					//например, с 8:30 до 10:00
+					let curParaSchedule = `с ${time[el2.par - 1].s} до ${time[el2.par - 1].e}`
+					
+					if (!el2.bigDay) {
+						qs(comp,'.para').innerText = `${el2.par}.`
+						qs(comp, '.para').setAttribute('ttipText', curParaSchedule)
+					} else {
+						day.classList.add('bigDay')
+					}
 
-                    let re = /( [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\..*)/
-                    // console.log(document.querySelector(`.d${i + 1}`))
+					
+					
+					qs(comp, '.subject').innerHTML = `${el2.name ? el2.name.split(regexp)[0] : ""} ${el2.spec ? '<span class="ttip spec" tail="1" ttipText="занятие только у ' + el2.spec + ' группы">' + el2.spec+'</span>':''}`
 
-                    comp.querySelector('.para').innerText = `${el2.par}.`
-                    comp.querySelector('.subject').innerText = `${el2.name ? el2.name.split(re)[0] : ""} ${qw(el2.spec, '')}`
-                    comp.querySelector('.name').innerText = `${el2.name ? (el2.name.split(re)[1] ? el2.name.split(re)[1].trim() : "") : ""}`
+                    qs(comp,'.name').innerText = `${el2.name ? (el2.name.split(regexp)[1] ? el2.name.split(regexp)[1].trim() : "") : ""}`
                     try {
-                        comp.querySelector('.place').innerText = `${((el2.place != undefined && (el2.place + '').match(/[0-9]/) != null) ? qw((el2.place + '').replace('\n', ' '), "") : "")}`
-                    } catch (error) {
-                        // debugger
-                    }
-                    comp.querySelector('.type').innerText = `${el2.type?.search(/ПЗ|ЛР|Л/) > -1 ? el2.type : (el2.place?.search(/ПЗ|ЛР|Л/) > -1? el2.place:'')}`
-
+                        qs(comp,'.place').innerText = `${((el2.place != undefined && (el2.place + '').match(/[0-9]/) != null) ? qw((el2.place + '').replace('\n', ' '), "") : "")}`
+					} catch (error) { }
+					
+                    qs(comp,'.type').innerText = `${el2.type?.search(/ПЗ|ЛР|Л/) > -1 ? el2.type : (el2.place?.search(/ПЗ|ЛР|Л/) > -1? el2.place:'')}`
+					if (qs(comp, '.type').innerText.search(/ПЗ|ЛР|Л/) > -1) {
+						let text = qs(comp, '.type').innerText == "ПЗ" ? "Пракическое занятие" :
+							(qs(comp, '.type').innerText == "ЛЗ" ? "Лабороторное зантяе" : "Лекция")
+						
+						qs(comp, '.type').setAttribute('ttipText', text)
+					}
                     day.innerHTML += comp.outerHTML
-                    //     .innerHTML += 
-                    // <div class="par">${el2.Column20[0]}. ${el2.Column33.split(/ [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\./[0]) ?? ""} ${el2.Column22.split(/ [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\./[0]) ?? ""} ${el2.Column34.split(/ [а-яА-ЯёЁ]+ [А-Я]\.[А-Я]\./[0]) ?? ""} ${("– ") + (el2.Column22 !== undefined ? "" : (el2.Column36 ?? ""))} ${("(" + el2.Column35 + ")") ?? ""}</div>`
-                } else {
-                    // console.log(el2)
                 }
             }
         }
 
     }
-    // console.log(wEl)
     weeksDom.push(wEl)
 
 }
@@ -323,7 +334,7 @@ export function dataMake(weekA, jj) {
         let vals = Object.values(curSheet); // их содержимое
         let entries = Object.entries(curSheet); // всё это в виде массива
         let inDom = (new DOMParser).parseFromString(XLSXam.utils.sheet_to_html(curSheet), "text/html")
-
+		window.inDomi=inDom
         let glob = ["AB", "Z", "AA", "AC", "AF", "AG", "AJ", "AK"]; //всё, кроме 1 группы
         function isEmpty(vals, keys, chars, num) {
             if ((vals[keys.indexOf(chars + num)] == undefined ||
@@ -349,19 +360,34 @@ export function dataMake(weekA, jj) {
 
        
         nee=[]
-        for (let i = 0; i < vals.length; i++) { //получаем массив пар
-            if (keys[i].search(/A[JK]\d/) >= 0 // наши 2 колонки 
+		for (let i = 0; i < vals.length; i++) { //получаем массив пар
+
+			let globalParaCondition = (keys[i].search(/\bX\d/) >= 0 &&  //1 колонка
+				vals[i].v != undefined && vals[i].v.length > 2
+				&& check(vals, keys, i));
+			
+			let ourLeft = "AJ"
+			let outRight = "AK"
+			let ourRegexp = new RegExp(`${ourLeft}\\d|${outRight}\\d`)
+			let ourPlace="AM"
+			let ourType="AL"
+
+			
+			if (keys[i].search(ourRegexp) >= 0 // наши 2 колонки 
                 && vals[i].v != undefined && vals[i].v.length > 2 // не пустые
                 ||
-                (keys[i].search(/\bX\d/) >= 0 &&  //1 колонка
-                    vals[i].v != undefined && vals[i].v.length > 2
-                    && check(vals, keys, i)
-                )) {
-                // console.log(vals[i].v,
-                //     // "AL" +
-                //     keys[i].match(/(\d+)/)[0])
+                globalParaCondition) {
 
-                let num = keys[i].match(/(\d+)/)[0];
+				let num = keys[i].match(/(\d+)/)[0];
+				let bigDay = 0
+				
+
+					if (inDom.querySelector('#sjs-X' + num).getAttribute('rowspan') == 8) {
+						console.log(vals[i])
+						bigDay = 1
+					}
+
+                
                 let numBef = keys[i-1].match(/(\d+)/)[0];
 
                 let cPar = parNum(num)
@@ -392,9 +418,9 @@ export function dataMake(weekA, jj) {
                 let spec;
                 if (keys[i].search(/\bX\d/) < 0 && num > offsetTop) {
                     // debugger
-                    if (isEmpty(vals, keys, "AJ", num)) {
+                    if (isEmpty(vals, keys, ourLeft, num)) {
                         spec = 'Ⅱ'
-                    } else if (inDom.querySelector('#sjs-AJ' + num).getAttribute('colspan') != '2') {
+					} else if (inDom.querySelector('#sjs-' + ourLeft + num).getAttribute('colspan') != '2') {
                         spec = 'Ⅰ'
                     }
                 }
@@ -402,9 +428,10 @@ export function dataMake(weekA, jj) {
                     par: cPar,
                     "day": day,
                     name: vals[i].v,
-                    type: vals[keys.indexOf("AL" + num)].v,
-                    place: vals[keys.indexOf("AM" + num)].v,
-                    spec: spec,
+                    type: vals[keys.indexOf(ourType + num)].v,
+                    place: vals[keys.indexOf(ourPlace + num)].v,
+					spec: spec,
+					bigDay:bigDay
                 })
 
             }
@@ -417,7 +444,6 @@ export function dataMake(weekA, jj) {
         nee12=[]
         nee.slice(1).forEach((el, i) => {
             if (el.day) {
-                debugger
                 if (i == 0 || nee.slice(1)[i - 1].day != el.day) {
                     nee12.push([])
                 }
@@ -434,7 +460,6 @@ export function dataMake(weekA, jj) {
 }
 
 export function setTime() {
-    debugger
     let maxPar = _.last(nee2[curWeekI][new Date().getDay() - 1]).par; // номер последней пары
     setInterval(() => {
         let cSec = () => { return new Date().getSeconds() }
@@ -460,7 +485,6 @@ export function setTime() {
                     (+el.e.split(':')[0] * 60) + (+el.e.split(':')[1])];
                 return 1;
             } else {
-                debugger
                 if (cTime() >= e && cTime() < sn && i+1 < maxPar) {
                     // console.log('bef', time[i + 1])
                     

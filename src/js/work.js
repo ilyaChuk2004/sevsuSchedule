@@ -16,6 +16,7 @@ export function today(e) {
 
     if ($('.day.cur').length) {
         q('.page-content').scrollTop(q('.page-content').scrollTop() + q('.day.cur')[0].getBoundingClientRect().y - 30, 500)
+        q('.swiper-pagination').scrollLeft(q('.swiper-pagination').scrollLeft() + q('.swiper-pagination-bullet-active')[0].getBoundingClientRect().x - 20, 500)
     }
 
     // console.log('sc')
@@ -210,8 +211,8 @@ export function work(fur) {
 
 
     setInterval(() => {
-        for (let index = 0; index < document.querySelectorAll('.ttip:not([init="1"])').length; index++) {
-            const element = document.querySelectorAll('.ttip:not([init="1"])')[index]
+        for (let index = 0; index < document.querySelectorAll('.ttip[ttipText]:not([init="1"])').length; index++) {
+            const element = document.querySelectorAll('.ttip[ttipText]:not([init="1"])')[index]
             if (element.getAttribute('data-only') == null) {
 
                 let ttext = element.getAttribute('ttipText')
