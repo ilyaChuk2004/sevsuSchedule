@@ -2,7 +2,21 @@
   <div class="page" data-name="home">
     <!-- Top Navbar -->
     <!-- Scrollable page content-->
-    <div @click="${tod}" class="fab fab-right-bottom ttip" delay='100' ttipText='Отправиться на текущий день и неделю'>
+
+    <div class="fab fab-right-bottom fab2">
+      <a href="#">
+        <i class="icon f7-icons">question</i>
+        <i class="icon f7-icons">xmark</i>
+      </a>
+      <div class="fab-buttons fab-buttons-top">
+        <a class="fab-label-button fab-close" href="/bell/">
+          <i class="icon f7-icons">bell_fill</i><span class="fab-label">Расписание звонков</span>
+        </a>
+      </div>
+    </div>
+
+
+    <div @click="${tod}" class="fab fab-right-bottom ttip fab1" delay='100' ttipText='Отправиться на текущий день и неделю'>
       <a href="#">
         <i class="icon f7-icons">calendar_today</i>
       </a>

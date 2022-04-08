@@ -172,7 +172,8 @@ export function work(fur) {
                     afterInit: function (e) {
                         // console.log('init')
                         let h = qs(document, '.swiper-pagination').offsetHeight
-                        qs(document, '.fab').style.bottom = `${h + 10}px`
+                        qs(document, '.fab1').style.bottom = `${h + 10}px`
+                        qs(document, '.fab2').style.bottom = `${h*2 + 15}px`
                         qs(document, '.swiper-wrapper').style.marginBottom = `${h + 20}px`
                         let condition = 0
                         try {

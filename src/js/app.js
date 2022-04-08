@@ -34,6 +34,15 @@ var app = new Framework7({
     disableContextMenu: true,
     touchRippleElements: `.ripple`
   },
+  view: {
+    browserHistory:true,
+    stackPages: true,
+    browserHistorySeparator: '#',
+
+    // browserHistoryRoot:'i',
+    iosSwipeBack: true
+
+  },
   // App routes
   routes: routes,
   // Register service worker (only on production build)
