@@ -780,6 +780,9 @@ h3.weekTit {
   overflow: hidden;
 }
 .page-content.p tr {
+  border-bottom: 1px #0000002e solid;
+}
+body.theme-dark .page-content.p tr {
   border-bottom: 1px #ffffff24 solid;
 }
 .page-content.p td {
@@ -796,5 +799,8 @@ h3.weekTit {
 }
 .page-content.p .header {
   font-weight: 600;
+  background: #00000017;
+}
+body.theme-dark .page-content.p .header {
   background: #ffffff0d;
 }
