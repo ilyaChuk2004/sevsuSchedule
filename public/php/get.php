@@ -1,6 +1,12 @@
 <?php
 
 
+header('Access-Control-Allow-Origin: *');
+
+header('Access-Control-Allow-Methods: GET, POST');
+
+header("Access-Control-Allow-Headers: X-Requested-With");
+
 define('HDOM_TYPE_ELEMENT', 1);
 define('HDOM_TYPE_COMMENT', 2);
 define('HDOM_TYPE_TEXT', 3);
@@ -2422,25 +2428,30 @@ class simple_html_dom
 
 
 
-$html = file_get_html('https://www.sevsu.ru/univers/shedule');
+
+
+
+$html = file_get_html('https://www.sevsu.ru/univers/shedule/');
 
 
 $links = array();
-foreach($html->find('a[href^="/images/raspis/2021-2022/2021/2%20SEMESTR/IITUTS/IITUTS_1kurs"]') as $a) {
- $links[] = $a->href;
-}
+$al;
+
+if ($_POST["group"]=="ПИ/б-21-1-о 👑" || $_POST["group"]=="ПИ/б-21-1-о" || $_POST["group"]=="ИС/б-21-3-о" || $_POST["group"]=="ИВТ/б-21-2-о" || $_POST["group"]=="ИВТ/б-21-3-о") {
+		$links[]=$html->find('#bx_3322728009_75167 a',1)->href;
+	}else if($_POST["group"]=="И/б-21-2-о"){
+		$links[]=$html->find('#bx_3322728009_75189 a',1)->href;
+	}else if($_POST["group"]=="ПИ/б-20-1-о"){
+		$links[]=$html->find('#bx_3322728009_75167 a',2)->href;
+	}else{
+		echo 'no group';
+	}
+	
 $filename = "https://www.sevsu.ru".$links[0];
 
 
-////
-
-
-header("Content-type: application/vnd.ms-excel");
-header("Content-Disposition: attachment; filename=\"Какое-то имя файла.xls\"");
-header("Cache-Control: max-age=0");
-
-
     $response= file_get_contents($filename);
+	
     echo  $response;
 
 ?>
