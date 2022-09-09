@@ -10,7 +10,7 @@ export function s_check_version(ms) {
         success: (res) => {
           if (localStorage.version == undefined) {
             localStorage.version = res
-          } else if (res != localStorage.version) {
+          } else if (res != localStorage.version && res[0]!='b') {
             console.log("CLEEEARRR")
             console.log("CLEEEARRR")
             console.log("CLEEEARRR")
@@ -39,10 +39,24 @@ export function s_check_version(ms) {
             } catch (error) { }
 
             localStorage.version = res
+            let resArr = res.split('^')
+            let wnew = () => {
+              if (resArr.length > 1) {
+                return '</br>' + resArr.splice(1).map((it) => {
+                  return `• ${it}`
+                }).join('</br>') + '</br>-------'
+              }
+              return ''
+            }
 
-            app.dialog.alert('Обнаружена новая версия приложения ' + res + '. Страница будет перезагружена', 'Обновление', () => {
+            app.dialog.alert(`Обнаружена новая версия приложения <strong>` + resArr[0] + `</strong>.
+            ${resArr.length > 1 ? '</br>-------</br>Что нового:' : ""}
+            ${wnew()}
+            </br> Страница будет перезагружена`, 'Обновление', () => {
               window.location.replace(window.location.href)
             })
+          } else if (res[0] == 'b') {
+            app.dialog.alert('Простите небольшие технические шоколадки')
           }
         }
       })

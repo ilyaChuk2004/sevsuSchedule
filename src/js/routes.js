@@ -1,9 +1,12 @@
 
 import HomePage from '../pages/home.f7';
 import bell from '../pages/bell.f7';
+import settings from '../pages/settings.f7';
 
 import { $ } from 'dom7';
 import Framework7 from 'framework7/bundle';
+import { group } from './globalVars';
+
 
 let transition = () => {
   if (Framework7.device == 'desktop' || Framework7.device == 'ipad' || window.innerWidth >= 750) {
@@ -32,12 +35,34 @@ let defPopup = {
     },
     close: (e) => {
       let backdrop = document.querySelector('.popup-backdrop')
-      backdrop.classList.remove('opened')
+      try {
+        backdrop.classList.remove('opened')
+      } catch (error) {
+        
+      }
+      
     },
     closed: (e) => {
       let backdrop = document.querySelector('.popup-backdrop')
-      backdrop.style.transition = ''
-      backdrop.classList.remove('opened')
+      try {
+        backdrop.style.transition = ''
+        backdrop.classList.remove('opened')
+      } catch (error) {
+        
+      }
+
+      if (e.route.path=="/settings/") {
+        if (state.appData.group.name!=group) {
+          setInterval(() => {
+            localStorage.force = 1
+            localStorage.group = JSON.stringify(state.appData.group)
+            window.location.replace(window.location.href)
+            window.location.replace(window.location.href)
+            window.location.replace(window.location.href)
+            window.location.replace(window.location.href)
+          }, 200);
+        }
+      }
     }
   }
 }
@@ -56,6 +81,17 @@ var routes = [
     popup: {
       component: bell,
       swipeHandler: '#bellViewHandler',
+      ...defPopup
+    }
+  },
+  {
+    path: '/settings/',
+    options: {
+      transition: transition(),
+    },
+    popup: {
+      component: settings,
+      swipeHandler: '#settingsViewHandler',
       ...defPopup
     }
   },

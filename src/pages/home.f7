@@ -28,9 +28,19 @@
       </div>
       <div>
         <div class="lastUpdate">последнее обновление ${lastUpdate()}</div>
+        <a href="/settings/">
+          <i class="icon f7-icons settings ripple ripple-dark-white ttip" ttipText="Настройки" 
+          >gear_alt_fill</i>
+        </a>
+        <!-- <a href="/settings/"> -->
+          <i class="icon f7-icons refreshBtn ripple ripple-dark-white ttip" ttipText="Обновить расписание" 
+           @click="${refreshBtn}" style="opacity:${state.appData.nowRequest==1?'0.4':'j'}"
+          >arrow_2_circlepath_circle_fill
+        </i>
+        <!-- </a> -->
         <h1>Расписание</h1>
         <div class="now">
-          <div class="tit">Сейчас идёт <span id="num"></span> пара <img src="" /></div>
+          <div class="tit">Загрузка<span id="num"></span>... <img src="" /></div>
           <div class="end">закончится через <span id="end"></span></div>
           <div class="time">(в <span id="hours"></span>)</div>
         </div>
@@ -57,7 +67,14 @@
   export default (props, { $store, $f7, $update, $el, $, $onMounted, $onUnmounted }) => {
     let ptr;
 
+    function refreshBtn() {
+      onRefresh(0, 0)
+    }
 
+    $f7.on("e-progress", (p) => {
+      console.log(p)
+      $f7.progressbar.set(p);
+    })
     function tod(e) {
       today('t')
     }
@@ -119,50 +136,72 @@
       }
     })
     $onMounted((mount) => {
+      state.appData.nowRequest=0;
 
-
+      $f7.progressbar.hide('.progressbar')
       work()
 
       setTimeout(() => {
+        try {
+          app.swiper.get('.swiper').update()
+        } catch (error) {
+
+        }
         ptr = $f7.ptr.get('.ptr-content')
         ptr.on('refresh', (e) => {
           // console.log(e)
-          if (navigator.onLine) {
-
-            work(1)
-            $f7.on("e-reloaded", (st) => {
-              ptr.done()
-              if (st) {
-                let toast = app.toast.create({
-                  text: 'Ошибка...',
-                  closeTimeout: 2000,
-
-                })
-
-                toast.open()
-              }
-            })
-          } else {
-            ptr.done()
-            let toast = app.toast.create({
-              text: 'нет интернета',
-              closeTimeout: 2000,
-
-            })
-
-            toast.open()
-            ptr.done()
-            setTimeout(() => {
-              ptr.done()
-            }, 100);
-          }
+          onRefresh()
 
         })
       }, 100);
     })
 
+    function onRefresh(notCheck, ref){
+      
+      if (state.appData.nowRequest==0) {
+        if (ref) {
+          ptr.refresh()
+        }
+        if (navigator.onLine) {
+
+          work(1)
+          $f7.on("e-reloaded", (st) => {
+            ptr.done()
+            if (st) {
+              let toast = app.toast.create({
+                text: 'Ошибка...',
+                closeTimeout: 2000,
+
+              })
+
+              toast.open()
+            }
+          })
+        } else if (!notCheck) {
+          ptr.done()
+          let toast = app.toast.create({
+            text: 'нет интернета',
+            closeTimeout: 2000,
+
+          })
+
+          toast.open()
+          ptr.done()
+          setTimeout(() => {
+            ptr.done()
+          }, 100);
+        }
+      }
+    }
+
     setInterval(() => {
-      $update()
+      $update(()=>{
+        try {
+          app.swiper.get('.swiper').update()
+        } catch (error) {
+          
+        }
+      })
     }, 1000);
     return $render;
   }

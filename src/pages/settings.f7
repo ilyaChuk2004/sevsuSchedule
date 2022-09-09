@@ -1,0 +1,76 @@
+<template>
+  <div id='settingsViewPopup' class="popup">
+    <div class="view">
+      <div class="handler" id="settingsViewHandler"></div>
+      <div class="page">
+        <div class="page-content p">
+          <h1>Настройки</h1>
+          
+
+          <div class="list no-hairlines-md">
+            <ul>
+              <li class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Ваша группа</div>
+                  <div class="item-input-wrap">
+                    <input id="autocomplete-dropdown-all" type="text" placeholder="${group}" autocomplete="off" />
+                  </div>
+                </div>
+              </li>
+              <!-- <li class="togglee ripple ripple-dark-white overflow-hidden">
+                <button
+                  class="col color-red button active-state-f button-round no-margin-vertical ripple ripple-dark-white overflow-hidden">Удалить
+                  группу</button>
+                </li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default (props, { $store, $f7, $update, $el, $, $onMounted, $onUnmounted }) => {
+   
+    let fruits;
+    $f7.request.post('https://ichuk.ru/cock/api/collections/get/groups?token=79766710864c138a7f377f20821886',
+      {         fields: {
+          name: 1
+        },filter:{
+          pub:'1'
+        } })
+      .then(function (res) {
+       let reew= JSON.parse(res.data).entries
+       fruits=reew.map((it) => {
+          return it.name
+        })
+        window.reew = fruits
+      });
+    $onMounted((mount) => {
+      let autocompleteDropdownAll = $f7.autocomplete.create({
+        inputEl: '#autocomplete-dropdown-all',
+        openIn: 'dropdown',
+        source: function (query, render) {
+          var results = [];
+          // Find matched items
+          for (var i = 0; i < fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+          }
+          // Render items by passing array with result items
+          render(results);
+        },
+        on: {
+          change: function (e) {
+            if (e[0]!=state.appData.group.name) {
+              // group=e[0]
+              state.appData.group.name=e[0]
+              localStorage.group=JSON.stringify(state.appData.group)
+            }
+          }
+        }
+      });
+
+    })
+    return $render;
+  }
+</script>

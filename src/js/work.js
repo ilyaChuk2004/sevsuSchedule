@@ -1,7 +1,7 @@
 import { dataMake, makeDom, setTime } from './render';
 
 import $ from 'dom7';
-import { qs, weeksDom } from './globalVars';
+import { group, qs, weeksDom } from './globalVars';
 
 export function today(e) {
 
@@ -13,10 +13,10 @@ export function today(e) {
 
     // setTimeout(() => {
     window.q = $
-
+    q('.swiper-pagination').scrollLeft(q('.swiper-pagination').scrollLeft() + q('.swiper-pagination-bullet-active')[0].getBoundingClientRect().x - 20, 500)
     if ($('.day.cur').length) {
         q('.page-content').scrollTop(q('.page-content').scrollTop() + q('.day.cur')[0].getBoundingClientRect().y - 30, 500)
-        q('.swiper-pagination').scrollLeft(q('.swiper-pagination').scrollLeft() + q('.swiper-pagination-bullet-active')[0].getBoundingClientRect().x - 20, 500)
+        
     }
 
     // console.log('sc')
@@ -31,7 +31,7 @@ export function today(e) {
 
 export function work(fur) {
     
-    if (localStorage.nee2 && !fur) {
+    if (localStorage.nee2 && localStorage.group && !+localStorage.force && !fur) {
         start(JSON.parse(localStorage.nee2))
     } else {
         start()
@@ -61,31 +61,66 @@ export function work(fur) {
 
         if (!event) {
             console.log('req')
+            state.appData.nowRequest = 1;
             var req = new XMLHttpRequest();
+            let lastSize = 0;
+
+            app.request.post('https://ichuk.ru/cock/api/collections/get/groups?token=79766710864c138a7f377f20821886',
+                { filter: { name: group }, })
+                .then(function (res) {
+                    console.log(JSON.parse(res.data).entries[0])
+                    state.appData.group = JSON.parse(res.data).entries[0]
+
+                    req.open('POST', `https://${state.appData.url}/php/get2.php`, true);
+                    req.responseType = 'arraybuffer';
+                    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    req.onload = function (e) {
+
+                        delete localStorage.nee2
+                        delete localStorage.weeks
+                        window.weeksDom = []
+                        state.appData.newSize = undefined
+                        if (localStorage.lastSize != lastSize && localStorage.force=='0') {
+                            state.appData.newSize = lastSize
+                        }
+                        localStorage.lastSize = lastSize
+                        localStorage.force = 0
+                        
+                        
+                        onload()
+
+                    };
+                    req.ontimeout = function (params) {
+                        app.emit('e-reloaded', 1)
+                    }
+                    req.onprogress = (event) => {
+                        // event.loaded returns how many bytes are downloaded
+                        // event.total returns the total number of bytes
+                        // event.total is only available if server sends `Content-Length` header
+                        console.log(`Downloaded ${event.loaded/(+(localStorage.lastSize ? localStorage.lastSize : 1031751))*70} bytes`);
+                        lastSize = event.loaded
+                        perc = event.loaded / (+(localStorage.lastSize ? localStorage.lastSize : 1031751)) * 70
+                        
+                        app.emit('e-progress', perc)
+                        
+                    }
+                    req.onerror = function () {
+                        app.emit('e-reloaded', 1)
+                    }
+                    req.onabort = function () {
+                        app.emit('e-reloaded', 1)
+                    }
+                    console.log(state.appData.group.name)
+                    req.send('group=' + state.appData.group.name);
+                    app.progressbar.show(0);
+                });
+            
+            
+            
+            
 
 
-            req.open('POST', `https://${state.appData.url}/php/get.php`, true);
-            req.responseType = 'arraybuffer';
-            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            req.onload = function (e) {
-
-                delete localStorage.nee2
-                delete localStorage.weeks
-                window.weeksDom = []
-
-                onload()
-
-            };
-            req.ontimeout = function (params) {
-                app.emit('e-reloaded', 1)
-            }
-            req.onerror = function () {
-                app.emit('e-reloaded', 1)
-            }
-            req.onabort = function () {
-                app.emit('e-reloaded', 1)
-            }
-            req.send('action=connectBD');
+            
         } else {
 
             onload(event, 1)
@@ -114,15 +149,15 @@ export function work(fur) {
 
 
 
-                for (let j = 0; j < weeks.length; j++) {
-                    // console.log(weeks[j]);
-                    dataMake(weeks[j], j)
-                }
+                    
+                    dataMake()
+                
 
                 if (nee2.length > 0) {
                     localStorage.nee2 = JSON.stringify(nee2)
                     localStorage.weeks = JSON.stringify(weeks)
                     localStorage.last = +new Date
+                    localStorage.group = JSON.stringify(state.appData.group)
                 }
 
                 //////////////////
@@ -140,6 +175,8 @@ export function work(fur) {
                 });
 
                 nee2 = JSON.parse(localStorage.nee2)
+                state.appData.group = JSON.parse(localStorage.group)
+                window.group = state.appData.group.name
 
 
                 for (let j = 0; j < nee2.length; j++) {
@@ -151,7 +188,7 @@ export function work(fur) {
 
             qs(document, '.swiper-wrapper').innerHTML = ''
             window.weeksDom.forEach((el, i) => {
-                qs(document, '.swiper-wrapper').innerHTML += `<div class="swiper-slide ${i == curWeekI ? "cur" : ""}">${el.outerHTML.replace('<h2></h2>', '')}</div>`
+                qs(document, '.swiper-wrapper').innerHTML += `<div class="swiper-slide ${i == curWeekI ? "cur" : ""}">${el.outerHTML.replaceAll('<h2></h2>', '')}</div>`
             })
 
 
@@ -160,7 +197,8 @@ export function work(fur) {
                     el: '.swiper-pagination',
                     clickable: true,
                     renderBullet: function (index, className) {
-                        return '<span class="' + className + '">' + weeks[index] + "</span>";
+                        let cur = curWeek - 1 == index?'cur':''
+                        return '<span class="' + className +' ' +cur+'">' + weeks[index] + "</span>";
                     },
                 },
                 allowTouchMove: false,
@@ -177,14 +215,27 @@ export function work(fur) {
                         qs(document, '.swiper-wrapper').style.marginBottom = `${h + 20}px`
                         let condition = 0
                         try {
+                            
                             document.querySelector(`.comp.cur`).closest('.day').classList.add("cur")
-                            document.querySelector(`.day.cur`).closest('.swiper-slide').classList.add("cur")
-                            condition = nee2[curWeekI][new Date().getDay() - 1].length > 0
+                            document.querySelector(`.comp.curW`).closest('.swiper-slide').classList.add("cur")
+                            
+                            condition = nee2[curWeekI][new Date().getDay() - 1].length > 0;
+                            
                         } catch (error) { }
+                        // debugger
                         
-                        if (new Date().getDay() != 0 && condition) { // если не воскресенье 
-                            setTime()
-                            window.timeStarted = 1
+                        if (new Date().getDay() != 0) { // если не воскресенье 
+                            
+                            try {
+                                if (nee2[curWeekI][new Date().getDay() - 1].length > 0) {
+                                    setTime()
+                                    window.timeStarted = 1
+                                } else {
+                                    qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
+                                }
+                            } catch (error) {
+                                qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
+                            }
 
                         } else {
                             qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
@@ -193,9 +244,18 @@ export function work(fur) {
                         setTimeout(() => {
                             today(e)
                             setTimeout(() => {
-                                swiper.updateAutoHeight(0)
+                                try {
+                                    app.swiper.get('.swiper').update()
+                                } catch (error) {
+
+                                }
                             }, 1000);
                         }, 300);
+                        try {
+                            app.swiper.get('.swiper').update()
+                        } catch (error) {
+
+                        }
                         app.emit('e-reloaded')
                         // console.log('iti', e)
                     },

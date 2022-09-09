@@ -403,6 +403,37 @@ body.theme-dark .popup .view {
   padding: 2.5rem 1rem 2rem;
   transition: opacity 0.2s ease;
 }
+.ripple.overflow-hidden,
+.bg-color-left.overflow-hidden,
+.bg-color-right.overflow-hidden {
+  overflow: hidden;
+}
+.ripple.ripple-dark-white .ripple-wave,
+.bg-color-left.ripple-dark-white .ripple-wave,
+.bg-color-right.ripple-dark-white .ripple-wave,
+.ripple .ripple-wave,
+.bg-color-left .ripple-wave,
+.bg-color-right .ripple-wave {
+  background-color: rgba(0, 0, 0, 0.068);
+}
+body.theme-dark .ripple.ripple-dark-white .ripple-wave,
+body.theme-dark .bg-color-left.ripple-dark-white .ripple-wave,
+body.theme-dark .bg-color-right.ripple-dark-white .ripple-wave,
+body.theme-dark .ripple .ripple-wave,
+body.theme-dark .bg-color-left .ripple-wave,
+body.theme-dark .bg-color-right .ripple-wave {
+  background-color: #ffffff2b;
+}
+.ripple.r07.ripple-dark-white .ripple-wave,
+.bg-color-left.r07.ripple-dark-white .ripple-wave,
+.bg-color-right.r07.ripple-dark-white .ripple-wave {
+  background-color: rgba(0, 0, 0, 0.178);
+}
+body.theme-dark .ripple.r07.ripple-dark-white .ripple-wave,
+body.theme-dark .bg-color-left.r07.ripple-dark-white .ripple-wave,
+body.theme-dark .bg-color-right.r07.ripple-dark-white .ripple-wave {
+  background-color: #ffffff37;
+}
 .popup {
   transition: filter 0.3s ease, transform 0.3s ease;
 }
@@ -487,6 +518,45 @@ h1 {
     box-shadow: rgba(105, 203, 242, 0.24) 0px 4px 0px -2px !important;
   }
 }
+i.settings {
+  right: 0;
+  position: absolute;
+  margin: 1rem;
+  opacity: 0.9;
+  filter: contrast(0.3);
+  z-index: 5;
+  color: var(--f7-theme-color);
+}
+i.settings::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+i.refreshBtn {
+  left: 0;
+  cursor: pointer;
+  position: absolute;
+  margin: 1rem;
+  opacity: 0.9;
+  filter: contrast(0.3);
+  z-index: 5;
+  color: var(--f7-theme-color);
+}
+i.refreshBtn::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
 .lastUpdate {
   width: 100%;
   text-align: center;
@@ -498,6 +568,9 @@ h1 {
 .ptr-pull-up .lastUpdate,
 .ptr-pull-down .lastUpdate {
   opacity: 0.6;
+}
+.ios .ptr-preloader {
+  top: 0.7rem;
 }
 h3.weekTit {
   display: inline-block;
@@ -530,6 +603,9 @@ h3.weekTit {
 }
 .now > * {
   display: none;
+}
+.now:not(.none) h3 {
+  margin: 0rem 0 1rem;
 }
 .now > h3 {
   margin: 0.5rem;
@@ -591,6 +667,19 @@ h3.weekTit {
   font-size: 20pt;
   color: #113a47d6;
   font-weight: 900;
+  text-transform: lowercase;
+}
+.day h2::first-letter {
+  text-transform: uppercase;
+}
+.day h2 span {
+  font-size: 1.02em;
+  opacity: 0.6;
+  font-variant: all-petite-caps;
+  font-weight: 700;
+}
+.day h2 span::before {
+  content: "• ";
 }
 .day h2:empty {
   display: none;
@@ -610,6 +699,7 @@ h3.weekTit {
   text-decoration-thickness: from-font;
   text-decoration-color: transparent;
   transition: 0.3s ease;
+  word-break: break-word;
 }
 .comp *:not(.para):hover {
   /* margin: 0rem 4pt 0 0; */
@@ -635,6 +725,18 @@ h3.weekTit {
   font-weight: 200;
   font-size: 0.8em;
   opacity: 0.8;
+}
+.name.long * {
+  display: block;
+  font-size: inherit;
+}
+.name .accordion-item .accordion-item-toggle::after {
+  content: '...';
+  color: var(--f7-theme-color);
+  opacity: 0.5;
+}
+.name .accordion-item-opened .accordion-item-toggle::after {
+  content: '';
 }
 .place {
   font-weight: 200;
@@ -739,6 +841,7 @@ h3.weekTit {
   display: flex;
   width: auto;
   background: #adedf1;
+  text-transform: lowercase;
   border-radius: 8rem;
   height: auto;
   padding: 0.5rem 0.8rem;
@@ -746,6 +849,9 @@ h3.weekTit {
   transition: 0.3s ease;
   filter: saturate(0.5) opacity(0.6);
   opacity: 1;
+}
+.swiper-pagination-bullet.cur {
+  filter: saturate(1) opacity(0.7);
 }
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
   filter: none !important;
@@ -784,6 +890,12 @@ h3.weekTit {
 }
 body.theme-dark .page-content.p tr {
   border-bottom: 1px #ffffff24 solid;
+}
+.page-content.p tr.cur {
+  background: #2ed4ff1c;
+}
+body.theme-dark .page-content.p tr.cur {
+  background: #2ed4ff1c;
 }
 .page-content.p td {
   padding: 0.7rem 0.9rem;

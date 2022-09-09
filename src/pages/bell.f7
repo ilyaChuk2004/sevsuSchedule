@@ -62,11 +62,28 @@
 </template>
 <script>
   export default (props, { $store, $f7, $update, $el, $, $onMounted, $onUnmounted }) => {
-   
+   let mounted=0
+   let int
     $onMounted((mount) => {
+      mounted=1
 
 
     })
+
+    $onUnmounted(()=>{
+      mounted=0
+      clearInterval(int)
+    })
+
+    int=setInterval(() => {
+      if (mounted) {
+        [...$el.value[0].querySelectorAll('tr')].slice(1).forEach((el, i)=>{
+          if (i==cPar[1]) {
+            el.classList.add('cur')
+          }
+        })
+      }
+    }, 1000);
     return $render;
   }
 </script>

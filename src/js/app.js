@@ -1,6 +1,6 @@
 import $ from 'dom7';
 import Framework7 from './framework7-custom.js';
-
+window.q=$
 // Import F7 Styles
 import '../css/framework7-custom.less';
 
@@ -86,6 +86,9 @@ if (localStorage.last && navigator.onLine && new Date(+localStorage.last).getDat
 
 import lodash from 'lodash'
 window._=lodash
+
+//отменяет перетаскивание мышкой ссылок и картинок
+$(document).on('dragstart', 'img, a', function (event) { event.preventDefault() })
 
 
 

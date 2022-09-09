@@ -2,6 +2,8 @@ export let day = new Date().getDay();
 export var workbook
 
 export var oFileIn;
+// export var group = 'И/б-21-2-о'
+
 export var oob = [];
 export var ppo = [];
 export var ppn = [];
@@ -13,6 +15,8 @@ export var days = [];
 export var weeksL;
 export var swiper
 export var curWeekI;
+export var perc;
+export var cPar;
 export var wEl;
 export var weeksDom = []
 export var nee2 = [{ par: 100 }]
@@ -41,9 +45,13 @@ export let time = [
 ]
 
 export function qw(v, d) {
-    if (!v) {
-        return d
-    } else {
+    try {
+        if (!v) {
+            return d
+        } else {
+            return v
+        }
+    } catch (error) {
         return v
     }
 }
@@ -56,8 +64,10 @@ export function getChildIndex(node) {
 }
 
 
-export var parts = '2021-08-29'.split('-');
+export var parts = '2022-08-29'.split('-');
 // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
 // January - 0, February - 1, etc.
 
 export var curWeek = Math.ceil(Math.round((new Date(+new Date) - new Date(parts[0], parts[1] - 1, parts[2])) / (1000 * 60 * 60 * 24)) / 7)
+
+export var group = localStorage.group ? JSON.parse(localStorage.group).name:'ПИ/б-21-1-о'
