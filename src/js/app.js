@@ -31,7 +31,7 @@ var app = new Framework7({
     mdTouchRipple: true,
     iosTouchRipple: true,
     auroraTouchRipple: true,
-    disableContextMenu: true,
+    disableContextMenu: false,
     touchRippleElements: `.ripple`
   },
   view: {
@@ -90,6 +90,11 @@ window._=lodash
 //отменяет перетаскивание мышкой ссылок и картинок
 $(document).on('dragstart', 'img, a', function (event) { event.preventDefault() })
 
+$(document).on('contextmenu', 'a, img, video', (e) => {
+			e.preventDefault()
+			e.stopPropagation();
+			return false;
+	})
 
 
 

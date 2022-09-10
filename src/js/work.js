@@ -70,6 +70,8 @@ export function work(fur) {
                 .then(function (res) {
                     console.log(JSON.parse(res.data).entries[0])
                     state.appData.group = JSON.parse(res.data).entries[0]
+                    state.appData.podgroup = localStorage.podgroup ? JSON.parse(localStorage.podgroup) : 'нет'
+                    document.body.setAttribute('pod', state.appData.podgroup)
 
                     req.open('POST', `https://${state.appData.url}/php/get2.php`, true);
                     req.responseType = 'arraybuffer';
@@ -176,6 +178,8 @@ export function work(fur) {
 
                 nee2 = JSON.parse(localStorage.nee2)
                 state.appData.group = JSON.parse(localStorage.group)
+                state.appData.podgroup = localStorage.podgroup ? JSON.parse(localStorage.podgroup) :'нет'
+                document.body.setAttribute('pod', state.appData.podgroup)
                 window.group = state.appData.group.name
 
 
@@ -291,8 +295,9 @@ export function work(fur) {
                     on: {
                         show: function (e) {
                             setTimeout(() => {
-                                if (document.querySelector('.tooltip-in') !== null) {
+                                if (document.querySelector('.tooltip-in') !== null && e.targetEl.tagName != 'A' && e.targetEl.parentElement.tagName != 'A' && !e.targetEl.querySelector('a')) {
                                     app.store.state.gf.vibrate('lil success')
+                                    console.log(e)
                                 }
                             }, 400)
                             if (element.getAttribute('ttipCondition') !== null && !eval(element.getAttribute('ttipCondition'))) {

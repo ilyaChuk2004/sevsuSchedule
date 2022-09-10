@@ -3,7 +3,7 @@
     <div class="view">
       <div class="handler" id="bellViewHandler"></div>
       <div class="page">
-        <div class="page-content p">
+        <div class="page-content p top">
           <h1>Расписание звонков</h1>
           
 

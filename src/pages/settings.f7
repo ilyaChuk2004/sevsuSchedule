@@ -4,26 +4,46 @@
       <div class="handler" id="settingsViewHandler"></div>
       <div class="page">
         <div class="page-content p">
-          <h1>Настройки</h1>
-          
-
-          <div class="list no-hairlines-md">
-            <ul>
-              <li class="item-content item-input">
-                <div class="item-inner">
-                  <div class="item-title item-label">Ваша группа</div>
-                  <div class="item-input-wrap">
-                    <input id="autocomplete-dropdown-all" type="text" placeholder="${group}" autocomplete="off" />
+          <div class="top">
+            <h1>Настройки</h1>
+            <div class="list no-hairlines drop">
+              <div class="tit"> Выберите вашу группу:</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-all" type="text" placeholder="${groupt()}" autocomplete="off" />
+                    </div>
                   </div>
-                </div>
-              </li>
-              <!-- <li class="togglee ripple ripple-dark-white overflow-hidden">
-                <button
-                  class="col color-red button active-state-f button-round no-margin-vertical ripple ripple-dark-white overflow-hidden">Удалить
-                  группу</button>
-                </li> -->
-            </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="list no-hairlines bt">
+              <div class="tit"> Её нет? </div>
+              <ul>
+                <li class="togglee ripple ripple-dark-white overflow-hidden">
+                  <a href="https://t.me/chuk2004" class="external">
+                    <button
+                      class="col button active-state-f button-round no-margin-vertical ripple ripple-dark-white overflow-hidden">Напишите
+                      мне</button>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="list no-hairlines drop">
+              <div class="tit"> Выберите вашу подгруппу:</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-pod" type="text" placeholder="${podgroup}" autocomplete="off" />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
+          <img class="settingsImg" src=${imgSrc()} alt=""/>
         </div>
       </div>
     </div>
@@ -31,8 +51,17 @@
 </template>
 <script>
   export default (props, { $store, $f7, $update, $el, $, $onMounted, $onUnmounted }) => {
-   
+   let imgSrc= ()=>{ return 'img/chuk'+app.device.prefersColorScheme()+'.svg'}
     let fruits;
+    let pfruits;
+    let podgroup=state.appData.podgroup
+    let groupt=()=>{
+      if (group=='ПИ/б-21-1-о') {
+        return 'ПИ/б-21-1-о 👑'
+      }else{
+        return group
+      }
+    }
     $f7.request.post('https://ichuk.ru/cock/api/collections/get/groups?token=79766710864c138a7f377f20821886',
       {         fields: {
           name: 1
@@ -54,7 +83,14 @@
           var results = [];
           // Find matched items
           for (var i = 0; i < fruits.length; i++) {
-            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+            
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+              if (fruits[i] == 'ПИ/б-21-1-о') {
+                results.push('ПИ/б-21-1-о 👑')
+              } else {
+                results.push(fruits[i])
+              }
+            };
           }
           // Render items by passing array with result items
           render(results);
@@ -63,8 +99,37 @@
           change: function (e) {
             if (e[0]!=state.appData.group.name) {
               // group=e[0]
+              if (e[0] == 'ПИ/б-21-1-о 👑') {
+                e[0]= 'ПИ/б-21-1-о'
+              }
               state.appData.group.name=e[0]
               localStorage.group=JSON.stringify(state.appData.group)
+            }
+          }
+        }
+      });
+      pfruits=['Ⅰ', 'Ⅱ', 'нет']
+      let autocompleteDropdownPod = $f7.autocomplete.create({
+        inputEl: '#autocomplete-dropdown-pod',
+        openIn: 'dropdown',
+        source: function (query, render) {
+          var results = [];
+          // Find matched items
+          // for (var i = 0; i < pfruits.length; i++) {
+          //   if (pfruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(pfruits[i]);
+          // }
+          results=pfruits
+          // Render items by passing array with result items
+          render(results);
+        },
+        on: {
+          change: function (e) {
+            console.log(e)
+            if (e[0]!=state.appData.podgroup) {
+              // group=e[0]
+              state.appData.podgroup=e[0]
+              localStorage.podgroup=JSON.stringify(state.appData.podgroup)
+              document.body.setAttribute('pod', e[0])
             }
           }
         }

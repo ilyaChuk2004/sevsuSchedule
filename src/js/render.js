@@ -60,6 +60,7 @@ export function makeDom(j) {
                 day.querySelector('h2').innerHTML = `${h2Day[0].toUpperCase()}${h2Day.slice(1)} <span>${h2Date}</span>`
             }
             if (isDay) {
+                comp.setAttribute('class', 'comp')
                 for (let i2 = 0; i2 < el.length; i2++) {//pars
                     const el2 = el[i2];
                     let todayB = 0;
@@ -91,10 +92,10 @@ export function makeDom(j) {
                         } else {
                             day.classList.add('bigDay')
                         }
-
-
-
-                        qs(comp, '.subject').innerHTML = `${el2.name ? el2.name.split(regexp)[0] : ""} ${el2.spec ? '<span class="ttip spec" tail="1" ttipText="занятие только у ' + el2.spec + ' группы">' + el2.spec + '</span>' : ''}`
+                        // debugger
+                        
+                        qs(comp, '.subject').innerHTML = `${el2.name ? el2.name.split(regexp)[0] : ""} ${el2.spec ? '<span class="ttip spec" tail="1" ttipText="занятие только у ' + el2.spec + ' подгруппы">' + el2.spec + '</span>' : ''}`
+                        comp.setAttribute('class','comp '+(el2.spec ? el2.spec : ''))
 
                         let nameRen = () => {
                             let name = el2.name.slice(el2.name.search(regexp))
@@ -938,6 +939,14 @@ export function dataMake(weekA, jj) {
 
             toast.open()
             console.log('neeeeww')
+        } else {
+            let toast = app.toast.create({
+                text: 'Ничего нового..',
+                closeTimeout: 2000,
+
+            })
+
+            toast.open()
         }
         setTimeout(() => {
             state.appData.nowRequest = 0

@@ -273,6 +273,94 @@ body.theme-dark .tooltip {
     transition-delay: 1.2s !important;
   }
 }
+body.squircle .block-strong,
+body.squircle .list > ul {
+  border-radius: 0px;
+  --squircle-smooth: 0.4;
+  --squircle-radius: 12;
+  background: paint(squircle);
+  --squircle-fill: var(--f7-list-bg-color);
+}
+.popup .block-strong,
+.popup .list > ul {
+  --squircle-fill: var(--mainBg);
+  filter: none;
+}
+body.radius .block-strong,
+body.radius .list > ul {
+  border-radius: 1rem;
+}
+body.radius .block-strong.nobg,
+body.radius .list > ul.nobg {
+  background: transparent;
+}
+.block-strong,
+.list {
+  filter: drop-shadow(0px 0px 19px #00000017);
+}
+.block-strong .title,
+.list .title {
+  font-size: var(--fheaderLil);
+  font-weight: 500;
+  color: var(--headerC);
+  padding-top: 0px !important;
+}
+body.squircle .block-strong.overflow-hidden,
+body.squircle .list.overflow-hidden > ul {
+  background: var(--f7-list-bg-color);
+  -webkit-mask-image: paint(squircle);
+}
+body.radius .list.block-strong {
+  background: var(--f7-list-bg-color) !important;
+}
+.bt li {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  padding-left: calc(var(--f7-list-item-padding-horizontal) + var(--f7-safe-area-left) - var(--menu-list-offset));
+  padding-right: calc(var(--f7-list-item-padding-horizontal) + var(--f7-safe-area-left) - var(--menu-list-offset));
+}
+.bt button {
+  background-color: var(--f7-button-pressed-bg-color, rgba(var(--f7-theme-color-rgb), 0.15)) !important;
+}
+.drop .tit,
+.bt .tit {
+  margin-bottom: 0.8rem;
+  margin-top: -0.4rem;
+  font-size: 13pt;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.list.drop {
+  z-index: 1000000099999999999999999;
+  position: relative;
+}
+.autocomplete-dropdown {
+  border-radius: 0rem 0rem 1rem 1rem;
+  overflow: hidden;
+  /* translate: 0 -1%; */
+  box-shadow: 0px 3px 5px #00000045, 0px -18px 0px var(--f7-list-bg-color);
+}
+.autocomplete-dropdown::after {
+  content: '';
+  width: 100%;
+  height: 0.1rem;
+  background: #f000;
+  position: absolute;
+  z-index: 1;
+  box-shadow: 0px 0px 17px 16px var(--f7-list-bg-color);
+}
+.settingsImg {
+  height: 5rem;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.7;
+}
+#settingsViewPopup .page-content {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+}
 html.with-modal-dialog .page-content,
 html.with-modal-popup .page-content {
   overflow-y: auto;
@@ -478,7 +566,7 @@ body[data-perf*="1"] .popup-behind {
 h1 {
   font-weight: 900;
 }
-*:not(.page-content.p) > h1 {
+*:not(.top) > h1 {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 35pt;
@@ -492,7 +580,7 @@ h1 {
   color: #113a47;
 }
 @media (prefers-color-scheme: dark) {
-  *:not(.page-content.p) > h1 {
+  *:not(.top) > h1 {
     color: #6bafca !important;
     box-shadow: rgba(105, 203, 242, 0.24) 0px 5px 0px -2px !important;
   }
@@ -692,6 +780,12 @@ h3.weekTit {
 .comp.this {
   filter: drop-shadow(0px 0px 6px var(--f7-theme-color));
 }
+body[pod="Ⅰ"] .comp.Ⅱ {
+  opacity: 0.3;
+}
+body[pod="Ⅱ"] .comp.Ⅰ {
+  opacity: 0.3;
+}
 .comp * {
   /* margin: 0rem 4pt 0 0; */
   display: inline;
@@ -775,7 +869,7 @@ h3.weekTit {
   min-height: 100% !important;
 }
 .swiper-wrapper:empty {
-  background-image: url("/miau.gif");
+  background-image: url("img/miau.gif");
   height: 10rem;
   background-size: contain;
   background-repeat: no-repeat;
