@@ -6,7 +6,7 @@
         <div class="page-content p">
           <div class="top">
             <h1>Настройки</h1>
-            <div class="list no-hairlines drop">
+            <div class="list no-hairlines drop" style="z-index: 90000;">
               <div class="tit"> Выберите вашу группу:</div>
               <ul>
                 <li class="item-content item-input">
@@ -30,7 +30,7 @@
                 </li>
               </ul>
             </div>
-            <div class="list no-hairlines drop">
+            <div class="list no-hairlines drop" style="z-index: 80000;">
               <div class="tit"> Выберите вашу подгруппу:</div>
               <ul>
                 <li class="item-content item-input">
@@ -43,7 +43,7 @@
               </ul>
             </div>
           </div>
-          <img class="settingsImg" src=${imgSrc()} alt=""/>
+          <img class="settingsImg no-point" src=${imgSrc()} alt=""/>
         </div>
       </div>
     </div>
@@ -79,6 +79,8 @@
       let autocompleteDropdownAll = $f7.autocomplete.create({
         inputEl: '#autocomplete-dropdown-all',
         openIn: 'dropdown',
+        className:'my',
+        expandInput:1,
         source: function (query, render) {
           var results = [];
           // Find matched items
@@ -105,6 +107,12 @@
               state.appData.group.name=e[0]
               localStorage.group=JSON.stringify(state.appData.group)
             }
+          },
+          open: function (e) {
+            e.el.style.opacity = '0'
+            setTimeout(() => {
+              e.el.style.opacity = '1'
+            }, 150);
           }
         }
       });
@@ -124,17 +132,28 @@
         },
         on: {
           change: function (e) {
-            console.log(e)
             if (e[0]!=state.appData.podgroup) {
               // group=e[0]
               state.appData.podgroup=e[0]
               localStorage.podgroup=JSON.stringify(state.appData.podgroup)
               document.body.setAttribute('pod', e[0])
             }
+          },
+          open:function(e){
+            e.el.style.height='auto'
+            e.el.style.zIndex='7000'
+            e.el.style.opacity='0'
+            setTimeout(() => {
+              e.el.style.opacity = '1'
+            }, 150);
           }
         }
       });
 
+
+      app.on('e-theme-change', ()=>{
+        $update()
+      })
     })
     return $render;
   }

@@ -95,7 +95,7 @@ export function makeDom(j) {
                         // debugger
                         
                         qs(comp, '.subject').innerHTML = `${el2.name ? el2.name.split(regexp)[0] : ""} ${el2.spec ? '<span class="ttip spec" tail="1" ttipText="занятие только у ' + el2.spec + ' подгруппы">' + el2.spec + '</span>' : ''}`
-                        comp.setAttribute('class','comp '+(el2.spec ? el2.spec : ''))
+                        comp.setAttribute('class', comp.className.replaceAll(/Ⅰ|Ⅱ/g, '') +' ' +(el2.spec ? el2.spec : ''))
 
                         let nameRen = () => {
                             let name = el2.name.slice(el2.name.search(regexp))
@@ -1006,7 +1006,7 @@ export function setTime() {
             if (mode !== '1') {
                 
 
-                document.querySelector('.now .tit').innerHTML = `Сейчас идёт <span id="num"></span> пара <img src="book.png" />`
+                document.querySelector('.now .tit').innerHTML = `Сейчас идёт <span id="num"></span> пара <img class='no-point' src="book.png" />`
                 
             }
             document.querySelector('.now #end').textContent = ((min + '').length == 1 ? "0" + min : min) + ":" + (
@@ -1042,10 +1042,10 @@ export function setTime() {
 
             }	
             if (mode!=='2') {
-                document.querySelector('.now .tit').innerHTML = "сейчас перерыв <img src='break.png'/>"
+                document.querySelector('.now .tit').innerHTML = "сейчас перерыв <img class='no-point' src='break.png'/>"
             }
         } else if (mode !== '3') {
-            document.querySelector('.now .tit').innerHTML = "Занятия закончились.. <img style='height: 15pt;' src='zzz.png'/>"
+            document.querySelector('.now .tit').innerHTML = "Занятия закончились.. <img style='height: 15pt;' class='no-point' src='zzz.png'/>"
             document.querySelector('.now').classList.remove('none')
             document.querySelector('.now').setAttribute('r', '3')
             try {

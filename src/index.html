@@ -31,8 +31,23 @@
   <!-- built styles file will be auto injected -->
 </head>
 
-<body class="radius">
+<body class="">
   <div id="app"></div>
+
+    <script>
+      (async function () {
+        if (!("paintWorklet" in CSS)) {
+          document.body.classList.add("radius")
+        } else {
+          document.body.classList.add("squircle")
+          CSS.paintWorklet.addModule(
+            `/libs/squircle.js`
+          )
+        }
+
+
+      })();
+    </script>
   <script type="module" src="./js/app.js"></script>
 </body>
 

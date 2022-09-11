@@ -223,6 +223,10 @@
   }
 }
 
+.no-point{
+  pointer-events: none;
+}
+
 .tooltip{
   pointer-events: none;
   background:#202020;
@@ -396,15 +400,28 @@ body.squircle .list.overflow-hidden>ul {
 }
 
 .list.drop{
-  z-index: 1000000099999999999999999;
-    position: relative;
 }
 
 .autocomplete-dropdown {
   border-radius: 0rem 0rem 1rem 1rem;
   overflow: hidden;
+  z-index: 89999;
+  height: 30vh;
+  transition: 0.15s ease;
+  opacity: 0;
   /* translate: 0 -1%; */
   box-shadow: 0px 3px 5px #00000045, 0px -18px 0px var(--f7-list-bg-color);
+
+  label{
+    transition: background-color 0.2s ease;
+  }
+  label.active-state{
+    background-color: #0000001c;
+    body.theme-dark &{
+      background-color:#ffffff08;
+
+    }
+  }
 
   &::after {
     content: '';
@@ -634,6 +651,7 @@ will-change: transform;
     *:not(.top)>h1 {
         text-align: center;
         margin-bottom: 2rem;
+        margin-top: 2.9rem;
         font-size: 35pt;
         box-shadow: 0 5px 0 -2px #69cbf2;
         display: inline-block;
@@ -643,6 +661,9 @@ will-change: transform;
         position: relative;
         transform: translateX(-50%) !important;
         color: #113a47;
+        @media (@bp-tablet) {
+            margin-top: 1rem;
+          }
 
         @media (prefers-color-scheme: dark) {
             color: #6bafca !important;
@@ -801,6 +822,14 @@ i.refreshBtn{
         display: flex;
         flex-direction: column;
         width: min(90vw, 26rem);
+
+        body.squircle &{
+              border-radius: 0px;
+                --squircle-smooth: 0.4;
+                --squircle-radius: 22;
+                background: paint(squircle);
+                --squircle-fill: var(--card);
+        }
 
         &:empty{
           display: none;

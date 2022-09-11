@@ -235,14 +235,14 @@ export function work(fur) {
                                     setTime()
                                     window.timeStarted = 1
                                 } else {
-                                    qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
+                                    qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' class='no-point' src='party.png'/></h3>"
                                 }
                             } catch (error) {
-                                qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
+                                qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' class='no-point' src='party.png'/></h3>"
                             }
 
                         } else {
-                            qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' src='party.png'/></h3>"
+                            qs(document, '.now .tit').innerHTML = "<h3>Сегодня выходной! <img style='height: 15pt;' class='no-point' src='party.png'/></h3>"
                         }
 
                         setTimeout(() => {

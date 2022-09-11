@@ -96,5 +96,18 @@ $(document).on('contextmenu', 'a, img, video', (e) => {
 			return false;
 	})
 
+let lastTheme = app.device.prefersColorScheme()
+setInterval(() => {
+  if (app.device.prefersColorScheme()=='light') {
+    document.body.classList.remove('theme-dark')
+  } else {
+    document.body.classList.add('theme-dark')
+  }
+
+  if (lastTheme != app.device.prefersColorScheme()) {
+    lastTheme=app.device.prefersColorScheme()
+    app.emit('e-theme-change', lastTheme)
+  }
+}, 1000);
 
 
